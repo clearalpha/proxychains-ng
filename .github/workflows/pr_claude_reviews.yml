@@ -1,0 +1,25 @@
+name: Claude PR Review
+
+permissions:
+  contents: read
+  pull-requests: write
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  claude-review:
+    if: vars.ENABLE_CLAUDE_PR_REVIEW == 'true'
+    uses: clearalpha/common/.github/workflows/__claude_pr_review.yml@e6c0a2a595fe602d734e8b2e5afa5d1b768c15bd # main
+    secrets:
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+    with:
+      claude_model: ${{ vars.CLAUDE_MODEL != 'default' && vars.CLAUDE_MODEL || '' }}
+      pr_walkthrough_provenance: ${{ vars.PR_WALKTHROUGH_PROVENANCE || '' }}
+      pr_walkthrough_diagram: ${{ vars.PR_WALKTHROUGH_DIAGRAM || '' }}
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: write
+      id-token: write
